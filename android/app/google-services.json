@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "176648479277",
+    "project_id": "murasoli-1504d",
+    "storage_bucket": "murasoli-1504d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176648479277:android:1044b976718f73653d8ea4",
+        "android_client_info": {
+          "package_name": "com.example.murasoli_ios"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6v44hcwNeKts8s7r7Vv7FjTFfca72jfQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
