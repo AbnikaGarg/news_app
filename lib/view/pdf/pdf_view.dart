@@ -120,50 +120,51 @@ class _MyAppState extends State<PdfView> {
           title:
               Image.asset('assets/splash.gif', height: 40.h, fit: BoxFit.cover),
         
-        actions: [
-          Row(
-            children: [
-              InkWell(
-                onTap: () {},
-                child: IconButton(
-                    onPressed: () {
-                      fileExists && dowloading == false
-                          ? OpenFile.open(filePath)
-                          : startDownload();
-                    },
-                    icon: fileExists
-                        ? const Icon(
-                            Icons.save,
-                            color: Colors.green,
-                          )
-                        : dowloading
-                            ? Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  CircularProgressIndicator(
-                                    value: progress,
-                                    strokeWidth: 3,
-                                    backgroundColor: Colors.grey,
-                                    valueColor:
-                                        const AlwaysStoppedAnimation<Color>(
-                                            Colors.blue),
-                                  ),
-                                  Text(
-                                    "${(progress * 100).toStringAsFixed(2)}",
-                                    style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: Colors.blue),
-                                  )
-                                ],
-                              )
-                            : Icon(
-                                Icons.download,
-                                size: 20.sp,
-                              )),
-              ),
-            ],
-          ),
-        ],),
+        // actions: [
+        //   Row(
+        //     children: [
+        //       InkWell(
+        //         onTap: () {},
+        //         child: IconButton(
+        //             onPressed: () {
+        //               fileExists && dowloading == false
+        //                   ? OpenFile.open(filePath)
+        //                   : startDownload();
+        //             },
+        //             icon: fileExists
+        //                 ? const Icon(
+        //                     Icons.save,
+        //                     color: Colors.green,
+        //                   )
+        //                 : dowloading
+        //                     ? Stack(
+        //                         alignment: Alignment.center,
+        //                         children: [
+        //                           CircularProgressIndicator(
+        //                             value: progress,
+        //                             strokeWidth: 3,
+        //                             backgroundColor: Colors.grey,
+        //                             valueColor:
+        //                                 const AlwaysStoppedAnimation<Color>(
+        //                                     Colors.blue),
+        //                           ),
+        //                           Text(
+        //                             "${(progress * 100).toStringAsFixed(2)}",
+        //                             style: TextStyle(
+        //                                 fontSize: 10.sp,
+        //                                 color: Colors.blue),
+        //                           )
+        //                         ],
+        //                       )
+        //                     : Icon(
+        //                         Icons.download,
+        //                         size: 20.sp,
+        //                       )),
+        //       ),
+        //     ],
+        //   ),
+        //],
+        ),
         body: SfPdfViewer.network(
           widget.pdf,
           controller: _pdfViewerController,

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:murasoli_ios/service/get_editions.dart';
 import 'package:murasoli_ios/view/news/news_details.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../components/appbar.dart';
 import '../../components/news_card.dart';
 import '../../model/NewsModel.dart';
@@ -155,6 +156,10 @@ class _nameState extends State<EditionList> {
                                         ),
                                       )
                                     : NewsCard(
+                                      onTap: () {
+                                      Share.share(
+                                          'www.murasoli.in/newscontent?storyid=${editionList!.first.table![index].gSlno}');
+                                    },
                                         image:
                                             "${editionList!.first.table![index].gImage.toString()}",
                                         newsTitle: editionList!

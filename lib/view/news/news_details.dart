@@ -8,7 +8,10 @@ import 'package:share_plus/share_plus.dart';
 import '../../model/NewsModel.dart';
 
 class NewsDetails extends StatefulWidget {
-  NewsDetails({super.key, required this.newsData});
+  NewsDetails({
+    super.key,
+    required this.newsData,
+  });
   final NewsTable newsData;
 
   @override
@@ -17,12 +20,47 @@ class NewsDetails extends StatefulWidget {
 
 class _NewsDetailsState extends State<NewsDetails> {
   double fontSize = 14;
+  late ScrollController _scrollController;
+  bool _showBackToTopButton = false;
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        setState(() {
+          if (_scrollController.offset >= 400) {
+            _showBackToTopButton = true; // show the back-to-top button
+          } else {
+            _showBackToTopButton = false; // hide the back-to-top button
+          }
+        });
+      });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // dispose the controller
+
+    super.dispose();
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(0,
+        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: _showBackToTopButton == false
+            ? null
+            : FloatingActionButton.small(
+                backgroundColor: Theme.of(context).primaryColor,
+                onPressed: _scrollToTop,
+                child: const Icon(CupertinoIcons.arrow_up),
+              ),
         backgroundColor: Colors.white,
-        body: CustomScrollView(slivers: [
+        body: CustomScrollView(controller: _scrollController, slivers: [
           SliverAppBar(
             expandedHeight: 400.h,
 
@@ -31,7 +69,8 @@ class _NewsDetailsState extends State<NewsDetails> {
             actions: [
               GestureDetector(
                 onTap: () {
-                  Share.share('https://www.murasoli.in/', );
+                  Share.share(
+                      'www.murasoli.in/newscontent?storyid=${widget.newsData.gSlno}');
                 },
                 child: Container(
                   margin: EdgeInsets.only(right: 10.w),
@@ -107,7 +146,7 @@ class _NewsDetailsState extends State<NewsDetails> {
                       children: [
                         Expanded(
                           child: Text(
-                            'முரசொலி | ${widget.newsData.gCreateddate!.substring(0, 10) }',
+                            'முரசொலி | ${widget.newsData.gCreateddate!.substring(0, 10)}',
                             style: GoogleFonts.roboto(
                                 fontSize: 8.sp, fontWeight: FontWeight.w400),
                           ),

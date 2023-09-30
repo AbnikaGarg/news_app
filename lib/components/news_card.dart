@@ -13,12 +13,14 @@ class NewsCard extends StatelessWidget {
     required this.date,
     required this.newsDis,
     required this.image,
+    this.onTap
   });
 
   final String newsTitle;
   final String date;
   final String image;
   final String newsDis;
+  var onTap;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -109,11 +111,7 @@ class NewsCard extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      Share.share(
-                        'https://www.murasoli.in/',
-                      );
-                    },
+                    onTap:onTap,
                     child: Container(
                       margin: EdgeInsets.only(right: 5.w),
                       child: SvgPicture.asset(

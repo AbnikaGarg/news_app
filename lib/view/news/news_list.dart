@@ -9,6 +9,7 @@ import 'package:murasoli_ios/service/get_news.dart';
 import 'package:murasoli_ios/view/epaper/epaper.dart';
 
 import 'package:murasoli_ios/view/news/news_details.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../components/news_card.dart';
 import '../../model/DistrictMasterModel.dart';
@@ -287,14 +288,12 @@ class _nameState extends State<NewsList> with SingleTickerProviderStateMixin {
                                     vertical: 10.h, horizontal: 12.w),
                                 child: GestureDetector(
                                   onTap: () {
-                                   context.push("/newscontent",
-                                    extra:  newsList![index],
-                                    );
-                                    // Navigator.of(context)
-                                    //     .push(MaterialPageRoute(
-                                    //         builder: (context) => NewsDetails(
-                                    //               newsData: newsList![index],
-                                    //             )));
+                                 
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => NewsDetails(
+                                                  newsData: newsList![index],
+                                                )));
                                   },
                                   child: index == 0
                                       ?   AspectRatio(
@@ -342,6 +341,10 @@ class _nameState extends State<NewsList> with SingleTickerProviderStateMixin {
                                           newsTitle: newsList![index]
                                               .gNewstitletamil
                                               .toString(),
+                                              onTap: () {
+                                      Share.share(
+                                          'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
+                                    },
                                           image:
                                               "${newsList![index].gImage.toString()}",
                                           date: newsList![index]

@@ -27,33 +27,33 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, GoRouterState state) {
           return const SplashScreen();
         },
-        routes: <RouteBase>[
-          GoRoute(
-            
-            path: 'home',
-            builder: (BuildContext context, GoRouterState state) {
-              return BottomBar(index: 0);
-            },
-          ),
-          GoRoute(
-            path: 'about',
-            builder: (context, state) {
-              //  final query = state.queryParams['storyid']!; // may be null
-              return About();
-            },
-          ),
-          GoRoute(
-            path: 'newscontent',
-            name: 'newscontent',
-            builder: (context, state) {
-               //final query = state.queryParams['storyid']!; // may be null
-              return NewsDetails(
-                newsData: state.extra as NewsTable
-              );
-            },
-          ),
-        ],
+        // routes: <RouteBase>[
+
+        // ],
       ),
+      GoRoute(
+        path: '/home',
+        builder: (BuildContext context, GoRouterState state) {
+          return BottomBar(index: 0);
+        },
+      ),
+      GoRoute(
+        path: '/about',
+        builder: (context, state) {
+          //  final query = state.queryParams['storyid']!; // may be null
+          return About();
+        },
+      ),
+      // GoRoute(
+      //   path: '/home/newscontent',
+      //   name: "newscontent",
+      //   builder: (context, state) {
+      //     final query = state.uri.queryParameters['storyid']!; // may be null
+      //     return NewsDetails(
+      //       stroryid: int.parse(query),
+      //     );
+      //   },
+      // ),
     ],
   );
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:murasoli_ios/service/get_searchData.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../components/news_card.dart';
 import '../../model/NewsModel.dart';
@@ -94,18 +96,20 @@ class _SearchState extends State<Search> {
                                         vertical: 10.h, horizontal: 14.w),
                                     child: GestureDetector(
                                       onTap: () {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    NewsDetails(
-                                                      newsData:
-                                                          newsList![index],
-                                                    )));
+                                      Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => NewsDetails(
+                                                  newsData: newsList![index],
+                                                )));
                                       },
                                       child: NewsCard(
                                         newsTitle: newsList![index]
                                             .gNewstitletamil
                                             .toString(),
+                                              onTap: () {
+                                      Share.share(
+                                          'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
+                                    },
                                         image:
                                             "${newsList![index].gImage.toString()}",
                                         date: newsList![index]

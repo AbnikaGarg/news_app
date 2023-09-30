@@ -10,6 +10,7 @@ import 'package:marquee/marquee.dart';
 import 'package:murasoli_ios/model/ThirukuralModel.dart';
 import 'package:murasoli_ios/service/get_flashnews.dart';
 import 'package:murasoli_ios/view/news/news_details.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../components/news_card.dart';
@@ -200,14 +201,12 @@ class _nameState extends State<Homepage> {
                             padding: EdgeInsets.symmetric(horizontal: 5.w),
                             child: InkWell(
                               onTap: () {
-                                context.push("/newscontent",
-                                    extra:  newsList![index],
-                                    );
-                                //  Navigator.of(context)
-                                //         .push(MaterialPageRoute(
-                                //             builder: (context) => NewsDetails(
-                                //                   newsData: newsList![index],
-                                //                 )));
+                                // context.pushNamed(
+                                //     "newscontent?storyid=${newsList![index].gSlno}");
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => NewsDetails(
+                                          newsData: newsList![index],
+                                        )));
                               },
                               child: Stack(
                                 children: [
@@ -334,6 +333,10 @@ class _nameState extends State<Homepage> {
                                                 )));
                                   },
                                   child: NewsCard(
+                                    onTap: () {
+                                      Share.share(
+                                          'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
+                                    },
                                     newsTitle: newsList![index]
                                         .gNewstitletamil
                                         .toString(),
@@ -649,7 +652,10 @@ class _nameState extends State<Homepage> {
                                                   newsData: newsList![index],
                                                 )));
                                   },
-                                  child: NewsCard(
+                                  child: NewsCard( onTap: () {
+                                      Share.share(
+                                          'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
+                                    },
                                     newsTitle: newsList![index]
                                         .gNewstitletamil
                                         .toString(),
