@@ -114,7 +114,7 @@ class _MyAppState extends State<PdfView> {
           elevation: 1,
           leading: GestureDetector(
               onTap: () {
-                _onWillPop;
+                _onWillPop();
               },
               child: Icon(Icons.arrow_back)),
           title:

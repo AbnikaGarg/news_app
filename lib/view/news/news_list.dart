@@ -23,7 +23,7 @@ final int srno;
 }
 
 class _nameState extends State<NewsList> with SingleTickerProviderStateMixin {
-  List<NewsTable>? newsList=[];
+  List<NewsTable>? newsList;
   void getNewsList(int id) async {
     final service = ApiFetcheNewsLists();
     service.apiFetcheNewsLists(id).then((value) {
@@ -287,7 +287,9 @@ class _nameState extends State<NewsList> with SingleTickerProviderStateMixin {
                                     vertical: 10.h, horizontal: 12.w),
                                 child: GestureDetector(
                                   onTap: () {
-                                    context.go("/newscontent");
+                                   context.push("/newscontent",
+                                    extra:  newsList![index],
+                                    );
                                     // Navigator.of(context)
                                     //     .push(MaterialPageRoute(
                                     //         builder: (context) => NewsDetails(
