@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
 import 'package:murasoli_ios/model/EditorialModel.dart';
 import 'package:murasoli_ios/service/get_editorial.dart';
-import 'package:flutter_html/flutter_html.dart';
+
+import '../../service/check_internet.dart';
+// import 'package:flutter_html/flutter_html.dart';
 
 class Editorial extends StatefulWidget {
   const Editorial({super.key});
@@ -14,12 +17,21 @@ class Editorial extends StatefulWidget {
 
 class _nameState extends State<Editorial> {
   String newsdate = "";
+  bool isInternet = true;
   @override
   void initState() {
     super.initState();
     newsdate = DateFormat("yyyy-MM-dd").format(DateTime.now()).toString();
-    getEditorialList();
-    setState(() {});
+    CheckInternet.checkConnection().then((bool result) {
+      print(result);
+      if (result) {
+        getEditorialList();
+      } else {
+        isInternet = false;
+        setState(() {});
+      }
+      /* check result here  */
+    });
   }
 
   selectDate() async {
@@ -72,94 +84,125 @@ class _nameState extends State<Editorial> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 20.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+    return isInternet
+        ? SingleChildScrollView(
+            child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () {
-                  selectDate();
-                },
-                child: Container(
-                  margin: EdgeInsets.only(right: 12.w),
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      color: Color(0xFFF1F2F6),
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Row(
+              SizedBox(
+                height: 20.h,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      selectDate();
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(right: 12.w),
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          color: Color(0xFFF1F2F6),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Row(
+                        children: [
+                          Text(
+                            "$newsdate ",
+                            style: TextStyle(fontSize: 14.sp),
+                          ),
+                          Icon(
+                            Icons.calendar_month_sharp,
+                            size: 16.sp,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Image.asset(
+                "assets/editorial.png",
+                fit: BoxFit.contain,
+                height: 350.h,
+                width: double.infinity,
+                //  color: Color.fromARGB(102, 48, 47, 47),
+                // colorBlendMode: BlendMode.darken,
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              if (editorialdata != null)
+                if (editorialdata!.first.table!.length != 0)
+                  Column(
                     children: [
                       Text(
-                        "$newsdate ",
-                        style: TextStyle(fontSize: 14.sp),
+                        "${editorialdata!.first.table![0].gNewstitle}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                            fontSize: 16.sp),
                       ),
-                      Icon(
-                        Icons.calendar_month_sharp,
-                        size: 16.sp,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Image.asset(
-            "assets/editorial.png",
-            fit: BoxFit.contain,
-            height: 350.h,
-            width: double.infinity,
-            //  color: Color.fromARGB(102, 48, 47, 47),
-            // colorBlendMode: BlendMode.darken,
-          ),
-          SizedBox(
-            height: 20.h,
-          ),
-          if (editorialdata != null)
-            if (editorialdata!.first.table!.length != 0)
-              Column(
-                children: [
-                  Text(
-                    "${editorialdata!.first.table![0].gNewstitle}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                        fontSize: 16.sp),
-                  ),
-                  SizedBox(
-                    height: 14.h,
-                  ),
-                  Container(
-                      padding: EdgeInsets.only(left: 6.w, right: 6.w),
-                      child: Html(
-                        style: {
-                          "body": Style(
-                              lineHeight: const LineHeight(1.4), wordSpacing: 2)
-                        },
-                        data: """
+                      SizedBox(
+                        height: 14.h,
+                      ),
+                      Container(
+                          padding: EdgeInsets.only(left: 10.w, right: 10.w),
+                          child: HtmlWidget(
+                            textStyle: TextStyle(height: 1.4, wordSpacing: 2),
+                            """
               ${editorialdata!.first.table![0].gNewsdetails}
                 """,
-                      ))
-                ],
-              )
-            else
-              Text(
-                "",
-              )
-          else
-            Padding(
-              padding: const EdgeInsets.all(40),
-              child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
+                          ))
+                    ],
+                  )
+                else
+                  Container(
+                    padding: EdgeInsets.only(left: 10.w, right: 10.w),
+                    child: Text(
+                      "தாங்கள் தேடிய $newsdate தேதியில் தலையங்கம் பிரசுரிக்கபடவில்லை",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                          fontSize: 16.sp),
+                    ),
+                  )
+              else
+                Padding(
+                  padding: const EdgeInsets.all(40),
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ), SizedBox(
+                height: 20.h,
               ),
-            )
-        ],
-      ),
-    );
+            ],
+          ))
+        : Column(
+            children: [
+              Expanded(
+                  child: Container(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/nointernet.png",
+                      height: 110.h,
+                    ),
+                    Text(
+                      "   No Internet",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          // color: Theme.of(context).primaryColor,
+                          fontSize: 14.sp),
+                    )
+                  ],
+                ),
+              )),
+            ],
+          );
   }
 }

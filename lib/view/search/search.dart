@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:murasoli_ios/service/get_searchData.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
 import '../../components/news_card.dart';
 import '../../model/NewsModel.dart';
 import '../news/news_details.dart';
@@ -113,7 +113,7 @@ class _SearchState extends State<Search> {
                                         image:
                                             "${newsList![index].gImage.toString()}",
                                         date: newsList![index]
-                                            .gCreateddate
+                                            .gIncidentdate
                                             .toString(),
                                         newsDis: newsList![index]
                                             .gNewsshorttamil

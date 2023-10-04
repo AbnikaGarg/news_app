@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:murasoli_ios/view/contact/contact.dart';
 import 'package:murasoli_ios/view/epaper/epaper.dart';
+import 'package:murasoli_ios/view/news/news_list.dart';
 import 'package:murasoli_ios/view/terms&conditions/terms&conditions.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../about/about.dart';
@@ -24,11 +25,18 @@ class NavBar extends StatelessWidget {
       "logo": "earth",
       "page": BottomBar(index: 2),
       "category": [
-        {"category": "உலக செய்திகள்", "srno": 4},
-        {"category": "தேசிய செய்திகள்", "srno": 1},
-        {"category": "மாநில செய்திகள்", "srno": 2},
-        {"category": "மாவட்ட செய்திகள்", "srno": 3},
-        {"category": "சிறப்பு மலர் 2023", "srno": 5}
+        {
+          "category": "உலக செய்திகள்",
+          "image": "assets/worldnews.png",
+          "srno": 4
+        },
+        {
+          "category": "தேசிய செய்திகள்",
+          "image": "assets/nationalnews.png",
+          "srno": 1
+        },
+        {"category": "மாநில செய்திகள்", "image": "assets/state.png", "srno":3},
+        {"category": "சிறப்பு மலர்", "image": "assets/flower.png", "srno": 2}
       ]
     },
     {
@@ -175,12 +183,35 @@ class NavBar extends StatelessWidget {
                                                                 [
                                                                 index3]["category"],
                                                           )));
-                                            } else {
+                                            } else if (listview[index]["logo"]
+                                                    .toString() ==
+                                                "earth") {
+                                              if (listview[index]["category"]
+                                                      [index3]["srno"] ==
+                                                  2) {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            PdfView(
+                                                                pdf:
+                                                                    "http://murasoli.devtesting.in/files/Murasoli%20Malar.pdf")));
+                                                return;
+                                              }
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          listview[index]
-                                                              ["page"]));
+                                                          NewsList(
+                                                            srno: listview[
+                                                                        index]
+                                                                    ["category"]
+                                                                [
+                                                                index3]["srno"],
+                                                            news: listview[index]
+                                                                        [
+                                                                        "category"]
+                                                                    [index3]
+                                                                ["category"],
+                                                          )));
                                             }
                                           },
                                           child: ListTile(
@@ -216,7 +247,9 @@ class NavBar extends StatelessWidget {
                                   Navigator.pop(context);
                                   if (listview[index]["logo"].toString() ==
                                       "about") {
-                                    context.push("/about", );
+                                    context.push(
+                                      "/about",
+                                    );
                                   } else {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(

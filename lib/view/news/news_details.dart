@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+// import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
@@ -146,7 +147,7 @@ class _NewsDetailsState extends State<NewsDetails> {
                       children: [
                         Expanded(
                           child: Text(
-                            'முரசொலி | ${widget.newsData.gCreateddate!.substring(0, 10)}',
+                            'முரசொலி | ${widget.newsData.gIncidentdate!}',
                             style: GoogleFonts.roboto(
                                 fontSize: 8.sp, fontWeight: FontWeight.w400),
                           ),
@@ -261,15 +262,11 @@ class _NewsDetailsState extends State<NewsDetails> {
               child: Container(
                   color: Colors.white,
                   padding: EdgeInsets.only(left: 12.w, right: 12.w),
-                  child: Html(
-                    style: {
-                      "body": Style(
-                          lineHeight: const LineHeight(1.4),
-                          margin: Margins.zero,
-                          fontSize: FontSize(fontSize.sp),
-                          wordSpacing: 2)
-                    },
-                    data: """
+                  child: HtmlWidget(
+                    textStyle: TextStyle(
+                          height: 1.4,
+                          fontSize: fontSize,
+                          wordSpacing: 2), """
               ${widget.newsData.gNewsdetailstamil}
                 """,
                   )))

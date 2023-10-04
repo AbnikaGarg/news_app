@@ -11,6 +11,7 @@ import '../edition/edition_category.dart';
 import '../editorial/editorial.dart';
 import '../epaper/epaper.dart';
 import '../home/homepage.dart';
+import '../news/news_category.dart';
 import '../news/news_list.dart';
 import 'component/bottomWidget.dart';
 
@@ -25,7 +26,8 @@ class _nameState extends State<BottomBar> {
   List<Widget> pages = [
     const Homepage(),
     const Editorial(),
-    NewsList(srno: 0),
+    NewsCat(),
+   // NewsList(srno: 0),
     EditionCat(),
     Text("data")
   ];

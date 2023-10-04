@@ -2,36 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:murasoli_ios/view/edition/edition_list.dart';
 
+import '../pdf/pdf_view.dart';
+import 'news_list.dart';
+
 // ignore: must_be_immutable
-class EditionCat extends StatelessWidget {
-  EditionCat({super.key});
-  bool isInternet = true;
-  List editionCat = [
-    {"category": "சென்னை பதிப்பு", "image": "assets/news1.png", "srno": 1},
-    {"category": "மதுரை பதிப்பு", "image": "assets/news2.png", "srno": 2},
+class NewsCat extends StatelessWidget {
+  NewsCat({super.key});
+
+  List newsCat = [
+    {"category": "உலக செய்திகள்", "image": "assets/worldnews.png", "srno": 4},
     {
-      "category": "ஒருங்கிணைந்த திருச்சி",
-      "image": "assets/news3.png",
-      "srno": 3
+      "category": "தேசிய செய்திகள்",
+      "image": "assets/nationalnews.png",
+      "srno": 1
     },
-    {
-      "category": "ஒருங்கிணைந்த கோயம்புத்தூர்",
-      "image": "assets/news4.png",
-      "srno": 4
-    },
-    {"category": "ஒருங்கிணைந்த வேலூர்", "image": "assets/news5.png", "srno": 5}
+    {"category": "மாநில செய்திகள்", "image": "assets/state.png", "srno": 3},
+    {"category": "சிறப்பு மலர்", "image": "assets/flower.png", "srno": 2}
   ];
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       child: Column(
         children: [
           SizedBox(
             height: 16.h,
           ),
           ListView.builder(
-            itemCount: editionCat.length,
+            itemCount: newsCat.length,
             shrinkWrap: true,
             primary: false,
             itemBuilder: (context, index) {
@@ -39,10 +37,17 @@ class EditionCat extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w),
                 child: GestureDetector(
                   onTap: () {
+                    if (newsCat[index]["srno"] == 2) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PdfView(
+                              pdf:
+                                  "http://murasoli.devtesting.in/files/Murasoli%20Malar.pdf")));
+                                  return;
+                    }
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => EditionList(
-                              srNo: editionCat[index]["srno"],
-                              title: editionCat[index]["category"],
+                        builder: (context) => NewsList(
+                              srno: newsCat[index]["srno"],
+                              news: newsCat[index]["category"],
                             )));
                   },
                   child: Container(
@@ -54,12 +59,12 @@ class EditionCat extends StatelessWidget {
                       image: DecorationImage(
                         colorFilter: ColorFilter.mode(
                             Colors.black.withOpacity(0.4), BlendMode.darken),
-                        image: AssetImage(editionCat[index]["image"]),
+                        image: AssetImage(newsCat[index]["image"]),
                         fit: BoxFit.cover,
                       ),
                     ),
                     child: Text(
-                      editionCat[index]["category"],
+                      newsCat[index]["category"],
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 20.sp,

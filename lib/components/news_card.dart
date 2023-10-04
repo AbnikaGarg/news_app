@@ -101,7 +101,7 @@ class NewsCard extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      " ${date.substring(0, 10)}",
+                      " ${date}",
                       style: TextStyle(
                           fontWeight: FontWeight.w400,
                           color: Color(0xFFA7A7A7),

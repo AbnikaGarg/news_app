@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../model/NewsModel.dart';
 import '../utils/app_urls.dart';
 
 class ApiFetcheNewsLists {
   List<NewsModel>? newsList = [];
-  Future<List<NewsModel>?> apiFetcheNewsLists(int srno) async {
-    var ur = Uri.parse(AppUrls.getNews + "?slno=$srno&incidentdate=2023-09-29");
+  Future<List<NewsModel>?> apiFetcheNewsLists(int srno, String date) async {
+    var ur = Uri.parse(AppUrls.getNews + "?slno=$srno&incidentdate=$date");
    try {
      final response2 = await http.get(ur, headers: {
       "content-type": "application/json",
@@ -20,8 +23,8 @@ class ApiFetcheNewsLists {
       default:
         return newsList;
     }
-   } catch (e) {
-     print(e); 
-   }
+   }   on SocketException catch (_) {
+      print('not connected');
+    }
   }
 }

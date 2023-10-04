@@ -6,8 +6,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:marquee/marquee.dart';
 import 'package:murasoli_ios/model/ThirukuralModel.dart';
+import 'package:murasoli_ios/service/check_internet.dart';
 import 'package:murasoli_ios/service/get_flashnews.dart';
 import 'package:murasoli_ios/view/news/news_details.dart';
 import 'package:share_plus/share_plus.dart';
@@ -31,7 +33,8 @@ class _nameState extends State<Homepage> {
   int _currentIndex = 0;
   bool showYoutube = true;
   bool _showBackToTopButton = false;
-
+  String newsdate = "";
+  bool isInternet = true;
   List bannerImages = [
     {"images": "assets/image1.jpg"},
     {"images": "assets/image2.png"},
@@ -42,9 +45,20 @@ class _nameState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
-    getThirukuralList();
-    getNewsList(1);
-    getFlashNews();
+    newsdate = DateFormat("yyyy-MM-dd").format(DateTime.now()).toString();
+    CheckInternet.checkConnection().then((bool result) {
+      print(result);
+      if (result) {
+        getThirukuralList();
+        getNewsList();
+        getFlashNews();
+      } else {
+        isInternet = false;
+        setState(() {});
+      }
+      /* check result here  */
+    });
+
     _scrollController = ScrollController()
       ..addListener(() {
         setState(() {
@@ -75,16 +89,25 @@ class _nameState extends State<Homepage> {
 
   // scroll controller
   late ScrollController _scrollController;
-
+  int i = 1;
   List<NewsTable>? newsList;
-  void getNewsList(int id) async {
+  void getNewsList() async {
     final service = ApiFetchHomePageLists();
-    service.apiFetchHomePageLists().then((value) {
+    //{DateFormat("yyyy-MM-dd").format(DateTime.now().subtract(Duration(days: 1))).toString()}
+    service.apiFetchHomePageLists(newsdate).then((value) {
       if (value != null) {
         //  newsList = value.first.table;
         newsList = value.first.table!
             .where((element) => element.gPriority.toString() == "2")
             .toList();
+        if (newsList!.isEmpty) {
+          newsList = null;
+          newsdate = DateFormat("yyyy-MM-dd")
+              .format(DateTime.now().subtract(Duration(days: i)))
+              .toString();
+          i++;
+          getNewsList();
+        }
         if (mounted) setState(() {});
       }
     });
@@ -156,533 +179,576 @@ class _nameState extends State<Homepage> {
                 onPressed: _scrollToTop,
                 child: const Icon(CupertinoIcons.arrow_up),
               ),
-        body: newsList == null
-            ? ShimmerWidget()
-            : SingleChildScrollView(
-                controller: _scrollController,
-                physics: BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    Container(
-                        padding: EdgeInsets.only(top: 8.h),
-                        color: Theme.of(context).primaryColor,
-                        height: 35.h,
-                        width: double.infinity,
-                        child: Marquee(
-                          text: flashNewsString,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                              fontSize: 14.sp),
-                          scrollAxis: Axis.horizontal,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+        body: isInternet
+            ? newsList == null
+                ? ShimmerWidget()
+                : SingleChildScrollView(
+                    controller: _scrollController,
+                    physics: BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        if (flashNewsString != "")
+                          Container(
+                              padding: EdgeInsets.only(top: 8.h),
+                              color: Theme.of(context).primaryColor,
+                              height: 35.h,
+                              width: double.infinity,
+                              child: Marquee(
+                                text: flashNewsString,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                    fontSize: 14.sp),
+                                scrollAxis: Axis.horizontal,
+                                crossAxisAlignment: CrossAxisAlignment.center,
 
-                          blankSpace: 20.0,
-                          velocity: 100.0,
-                          //  pauseAfterRound: Duration(seconds: 1),
-                          showFadingOnlyWhenScrolling: true,
-                          fadingEdgeStartFraction: 0.1,
-                          fadingEdgeEndFraction: 0.1,
-                          //numberOfRounds: 3,
-                          startPadding: 10.0,
+                                blankSpace: 20.0,
+                                velocity: 100.0,
+                                //  pauseAfterRound: Duration(seconds: 1),
+                                showFadingOnlyWhenScrolling: true,
+                                fadingEdgeStartFraction: 0.1,
+                                fadingEdgeEndFraction: 0.1,
+                                //numberOfRounds: 3,
+                                startPadding: 10.0,
 
-                          accelerationDuration: Duration(seconds: 1),
-                          accelerationCurve: Curves.linear,
-                          decelerationDuration: Duration(milliseconds: 500),
-                          decelerationCurve: Curves.easeOut,
-                        )),
-                    SizedBox(
-                      height: 12.h,
-                    ),
-                    CarouselSlider.builder(
-                        itemCount: 5,
-                        itemBuilder: (context, index, realIndex) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 5.w),
-                            child: InkWell(
-                              onTap: () {
-                                // context.pushNamed(
-                                //     "newscontent?storyid=${newsList![index].gSlno}");
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => NewsDetails(
-                                          newsData: newsList![index],
-                                        )));
-                              },
-                              child: Stack(
-                                children: [
-                                  AspectRatio(
-                                    aspectRatio: 16 / 9,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(16),
-                                      child: Image.network(
-                                        "https://admin.murasoli.in/assets/layout/Documents/${newsList![index].gImage.toString()}",
-                                        fit: BoxFit.cover,
-                                        color: Color(0x66000000),
-                                        colorBlendMode: BlendMode.darken,
-                                      ),
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: 20.h,
-                                          left: 20.w,
-                                          right: 26.w),
-                                      child: Text(
-                                        newsList![index]
-                                            .gNewstitletamil
-                                            .toString(),
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
-                                            fontSize: 14.sp),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                        options: CarouselOptions(
-                          //  height: getProportionateScreenHeight(300),
-                          aspectRatio: 16 / 8,
-                          enlargeCenterPage: true,
-
-                          viewportFraction: 0.85,
-                          initialPage: 0,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              _currentIndex = index;
-                            });
-                          },
-
-                          enableInfiniteScroll: true,
-                          reverse: false,
-                          autoPlay: true,
-                          autoPlayInterval: Duration(seconds: 3),
-                          autoPlayAnimationDuration:
-                              Duration(milliseconds: 800),
-                          // autoPlayCurve: Curves.fastOutSlowIn,
-                          autoPlayCurve: Curves.fastOutSlowIn,
-                          // onPageChanged: pageController,
-                          enlargeStrategy: CenterPageEnlargeStrategy.zoom,
-
-                          scrollDirection: Axis.horizontal,
-                        )),
-                    DotsIndicator(
-                      dotsCount: 5,
-                      position: _currentIndex,
-                      decorator: DotsDecorator(
-                        activeColor: Theme.of(context).primaryColor,
-                        activeShape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 16.h,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "இன்றைய செய்திகள்",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                                fontSize: 16.sp),
-                          ),
-                          // Text(
-                          //   "See all",
-                          //   style: TextStyle(
-                          //       fontWeight: FontWeight.w400,
-                          //       color: Theme.of(context).primaryColor,
-                          //       fontSize: 12.sp),
-                          // )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 14.h,
-                    ),
-                    if (newsList != null)
-                      if (newsList!.isNotEmpty)
-                        ListView.builder(
-                          itemCount:
-                              newsList!.length > 10 ? 10 : newsList!.length,
-                          shrinkWrap: true,
-                          primary: false,
-                          itemBuilder: (context, index) {
-                            if (index < 5) return SizedBox();
-                            return Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12.h, horizontal: 12.w),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => NewsDetails(
-                                                  newsData: newsList![index],
-                                                )));
-                                  },
-                                  child: NewsCard(
+                                accelerationDuration: Duration(seconds: 1),
+                                accelerationCurve: Curves.linear,
+                                decelerationDuration:
+                                    Duration(milliseconds: 500),
+                                decelerationCurve: Curves.easeOut,
+                              )),
+                        SizedBox(
+                          height: 12.h,
+                        ),
+                        if (newsList!.isNotEmpty)
+                          CarouselSlider.builder(
+                              itemCount: 5,
+                              itemBuilder: (context, index, realIndex) {
+                                return Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 5.w),
+                                  child: InkWell(
                                     onTap: () {
-                                      Share.share(
-                                          'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
+                                      // context.pushNamed(
+                                      //     "newscontent?storyid=${newsList![index].gSlno}");
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                              builder: (context) => NewsDetails(
+                                                    newsData: newsList![index],
+                                                  )));
                                     },
-                                    newsTitle: newsList![index]
-                                        .gNewstitletamil
-                                        .toString(),
-                                    image:
-                                        "${newsList![index].gImage.toString()}",
-                                    date: newsList![index]
-                                        .gCreateddate
-                                        .toString(),
-                                    newsDis: newsList![index]
-                                        .gNewsshorttamil
-                                        .toString(),
+                                    child: Stack(
+                                      children: [
+                                        AspectRatio(
+                                          aspectRatio: 16 / 9,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            child: Image.network(
+                                              "https://admin.murasoli.in/assets/layout/Documents/${newsList![index].gImage.toString()}",
+                                              fit: BoxFit.cover,
+                                              color: Color(0x66000000),
+                                              colorBlendMode: BlendMode.darken,
+                                            ),
+                                          ),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                bottom: 20.h,
+                                                left: 20.w,
+                                                right: 26.w),
+                                            child: Text(
+                                              newsList![index]
+                                                  .gNewstitletamil
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                  fontSize: 14.sp),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ));
-                          },
-                        )
-                      else
-                        Center(
-                          child: Container(
-                            child: const Text("No News"),
+                                );
+                              },
+                              options: CarouselOptions(
+                                //  height: getProportionateScreenHeight(300),
+                                aspectRatio: 16 / 8,
+                                enlargeCenterPage: true,
+
+                                viewportFraction: 0.85,
+                                initialPage: 0,
+                                onPageChanged: (index, reason) {
+                                  setState(() {
+                                    _currentIndex = index;
+                                  });
+                                },
+
+                                enableInfiniteScroll: true,
+                                reverse: false,
+                                autoPlay: true,
+                                autoPlayInterval: Duration(seconds: 3),
+                                autoPlayAnimationDuration:
+                                    Duration(milliseconds: 800),
+                                // autoPlayCurve: Curves.fastOutSlowIn,
+                                autoPlayCurve: Curves.fastOutSlowIn,
+                                // onPageChanged: pageController,
+                                enlargeStrategy: CenterPageEnlargeStrategy.zoom,
+
+                                scrollDirection: Axis.horizontal,
+                              )),
+                        if (newsList!.isNotEmpty)
+                          DotsIndicator(
+                            dotsCount: 5,
+                            position: _currentIndex,
+                            decorator: DotsDecorator(
+                              activeColor: Theme.of(context).primaryColor,
+                              activeShape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0)),
+                            ),
                           ),
-                        )
-                    else
-                      Center(
-                          child: CircularProgressIndicator(
-                        color: Theme.of(context).primaryColor,
-                      )),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "தினம் ஒரு திருக்குறள்",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.red,
-                                fontSize: 16.sp),
+                        SizedBox(
+                          height: 16.h,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
                           ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 12.w, vertical: 10.h),
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Image.asset(
-                            "assets/thiruvalluvar.jpg",
-                            fit: BoxFit.cover,
-                            // color: Color(0x66000000),
-                            // colorBlendMode: BlendMode.darken,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "இன்றைய செய்திகள்",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                    fontSize: 16.sp),
+                              ),
+                              // Text(
+                              //   "See all",
+                              //   style: TextStyle(
+                              //       fontWeight: FontWeight.w400,
+                              //       color: Theme.of(context).primaryColor,
+                              //       fontSize: 12.sp),
+                              // )
+                            ],
                           ),
                         ),
-                      ),
-                    ),
-                    if (thirukalList != null)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 12.w, vertical: 10.h),
-                            child: Shimmer(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color.fromRGBO(85, 60, 152, 1),
-                                    Color.fromRGBO(0, 194, 203, 1),
-                                    Color.fromRGBO(238, 75, 43, 1),
-                                  ],
-                                  stops: [
-                                    0.1,
-                                    0.3,
-                                    0.4,
-                                  ],
-                                  begin: Alignment(-1.0, -0.3),
-                                  end: Alignment(1.0, 0.3),
-                                  tileMode: TileMode.clamp,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 16.sp,
-                                            ),
-                                            '${thirukalList!.first.table![0].gKural}')),
-                                    // Text(
-                                    //   '${thirukalList!.first.table![0].gKural}',
-                                    //   style: TextStyle(
-                                    //       fontSize: 12.sp, fontWeight: FontWeight.w500),
-                                    // ),
-                                    SizedBox(
-                                      height: 6.h,
-                                    ),
-                                    FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 16.sp,
-                                            ),
-                                            '${thirukalList!.first.table![0].gKural1}')),
-                                    // Text(
-                                    //   '${thirukalList!.first.table![0].gKural1}',
-                                    //   style: TextStyle(
-                                    //       fontSize: 12.sp, fontWeight: FontWeight.w500),
-                                    // ),
-                                  ],
-                                )),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 12.w, vertical: 4.h),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'குறள் : ',
-                                  style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Theme.of(context).primaryColor),
-                                ),
-                                Text(
-                                  '${thirukalList!.first.table![0].gKuralno}',
-                                  style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                                SizedBox(
-                                  width: 20.w,
-                                ),
-                                //Spacer(),
-                                Text(
-                                  'அதிகாரம் : ',
-                                  style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Theme.of(context).primaryColor),
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    '${thirukalList!.first.table![0].gAdhigaram}',
-                                    style: TextStyle(
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 12.w, vertical: 6.h),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'பிரிவு : ',
-                                  style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Theme.of(context).primaryColor),
-                                ),
-                                Text(
-                                  '${thirukalList!.first.table![0].gPirivu}',
-                                  style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                                SizedBox(
-                                  width: 20.w,
-                                ),
-                                Text(
-                                  'கிளை : ',
-                                  style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Theme.of(context).primaryColor),
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    '${thirukalList!.first.table![0].gKilai}',
-                                    style: TextStyle(
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 12.w, vertical: 10.h),
-                            child: Text(
-                              style: GoogleFonts.roboto(
-                                  height: 1.4,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w400),
-                              '${thirukalList!.first.table![0].gMeaning}',
-                            ),
-                          )
-                        ],
-                      ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Text(
-                      "முரசொலியின் வரலாறு!",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.red,
-                          fontSize: 16.sp),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: YoutubePlayerBuilder(
-                          // onExitFullScreen: () {
-                          //   // The player forces portraitUp after exiting fullscreen. This overrides the behaviour.
-                          //   SystemChrome.setPreferredOrientations(
-                          //       DeviceOrientation.values);
-                          // },
-                          player: YoutubePlayer(
-                            controller: controller,
-                            showVideoProgressIndicator: true,
-                            progressIndicatorColor: Colors.red,
-                            topActions: <Widget>[
-                              const SizedBox(width: 8.0),
-                              Expanded(
-                                child: Text(
-                                  controller.metadata.title,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
+                        SizedBox(
+                          height: 14.h,
+                        ),
+                        if (newsList != null)
+                          if (newsList!.isNotEmpty)
+                            ListView.builder(
+                              itemCount:
+                                  newsList!.length > 10 ? 10 : newsList!.length,
+                              shrinkWrap: true,
+                              primary: false,
+                              itemBuilder: (context, index) {
+                                if (index < 5) return SizedBox();
+                                return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 12.h, horizontal: 12.w),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    NewsDetails(
+                                                      newsData:
+                                                          newsList![index],
+                                                    )));
+                                      },
+                                      child: NewsCard(
+                                        onTap: () {
+                                          Share.share(
+                                              'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
+                                        },
+                                        newsTitle: newsList![index]
+                                            .gNewstitletamil
+                                            .toString(),
+                                        image:
+                                            "${newsList![index].gImage.toString()}",
+                                        date: newsList![index]
+                                            .gIncidentdate
+                                            .toString(),
+                                        newsDis: newsList![index]
+                                            .gNewsshorttamil
+                                            .toString(),
+                                      ),
+                                    ));
+                              },
+                            )
+                          else
+                            Center(
+                              child: Container(
+                                child: const Text(""),
                               ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.settings,
-                                  color: Colors.white,
-                                  size: 25.0,
-                                ),
-                                onPressed: () {
-                                  //log('Settings Tapped!');
-                                },
+                            )
+                        else
+                          Center(
+                              child: CircularProgressIndicator(
+                            color: Theme.of(context).primaryColor,
+                          )),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "தினம் ஒரு திருக்குறள்",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.red,
+                                    fontSize: 16.sp),
                               ),
                             ],
                           ),
-                          builder: (context, player) {
-                            return AspectRatio(
-                              aspectRatio: 16 / 9,
-                              child: Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                  // some widgets
-                                  player,
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          controller.play();
-                                          showYoutube = false;
-                                          setState(() {});
-                                        },
-                                        child: showYoutube
-                                            ? Image.asset(
-                                                "assets/youtube2.png",
-                                                height: 70.h,
-                                                fit: BoxFit.cover,
-                                              )
-                                            : Container()),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 10.h),
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: Image.asset(
+                                "assets/thiruvalluvar.jpg",
+                                fit: BoxFit.cover,
+                                // color: Color(0x66000000),
+                                // colorBlendMode: BlendMode.darken,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (thirukalList != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w, vertical: 10.h),
+                                child: Shimmer(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color.fromRGBO(85, 60, 152, 1),
+                                        Color.fromRGBO(0, 194, 203, 1),
+                                        Color.fromRGBO(238, 75, 43, 1),
+                                      ],
+                                      stops: [
+                                        0.1,
+                                        0.3,
+                                        0.4,
+                                      ],
+                                      begin: Alignment(-1.0, -0.3),
+                                      end: Alignment(1.0, 0.3),
+                                      tileMode: TileMode.clamp,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16.sp,
+                                                ),
+                                                '${thirukalList!.first.table![0].gKural}')),
+                                        // Text(
+                                        //   '${thirukalList!.first.table![0].gKural}',
+                                        //   style: TextStyle(
+                                        //       fontSize: 12.sp, fontWeight: FontWeight.w500),
+                                        // ),
+                                        SizedBox(
+                                          height: 6.h,
+                                        ),
+                                        FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16.sp,
+                                                ),
+                                                '${thirukalList!.first.table![0].gKural1}')),
+                                        // Text(
+                                        //   '${thirukalList!.first.table![0].gKural1}',
+                                        //   style: TextStyle(
+                                        //       fontSize: 12.sp, fontWeight: FontWeight.w500),
+                                        // ),
+                                      ],
+                                    )),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w, vertical: 4.h),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'குறள் : ',
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                                    Text(
+                                      '${thirukalList!.first.table![0].gKuralno}',
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                    SizedBox(
+                                      width: 20.w,
+                                    ),
+                                    //Spacer(),
+                                    Text(
+                                      'அதிகாரம் : ',
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        '${thirukalList!.first.table![0].gAdhigaram}',
+                                        style: TextStyle(
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w, vertical: 6.h),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'பிரிவு : ',
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                                    Text(
+                                      '${thirukalList!.first.table![0].gPirivu}',
+                                      style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                    SizedBox(
+                                      width: 20.w,
+                                    ),
+                                    Text(
+                                      'கிளை : ',
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        '${thirukalList!.first.table![0].gKilai}',
+                                        style: TextStyle(
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w, vertical: 10.h),
+                                child: Text(
+                                  style: GoogleFonts.roboto(
+                                      height: 1.4,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w400),
+                                  '${thirukalList!.first.table![0].gMeaning}',
+                                ),
+                              )
+                            ],
+                          ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        Text(
+                          "முரசொலியின் வரலாறு!",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.red,
+                              fontSize: 16.sp),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: YoutubePlayerBuilder(
+                              // onExitFullScreen: () {
+                              //   // The player forces portraitUp after exiting fullscreen. This overrides the behaviour.
+                              //   SystemChrome.setPreferredOrientations(
+                              //       DeviceOrientation.values);
+                              // },
+                              player: YoutubePlayer(
+                                controller: controller,
+                                showVideoProgressIndicator: true,
+                                progressIndicatorColor: Colors.red,
+                                topActions: <Widget>[
+                                  const SizedBox(width: 8.0),
+                                  Expanded(
+                                    child: Text(
+                                      controller.metadata.title,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.0,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.settings,
+                                      color: Colors.white,
+                                      size: 25.0,
+                                    ),
+                                    onPressed: () {
+                                      //log('Settings Tapped!');
+                                    },
                                   ),
                                 ],
                               ),
-                            );
-                          }),
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    if (newsList != null)
-                      if (newsList!.isNotEmpty)
-                        ListView.builder(
-                          itemCount:
-                              newsList!.length > 10 && newsList!.length < 20
-                                  ? newsList!.length
-                                  : 20,
-                          shrinkWrap: true,
-                          primary: false,
-                          itemBuilder: (context, index) {
-                            if (index < 10) return SizedBox();
-                            return Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12.h, horizontal: 12.w),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => NewsDetails(
-                                                  newsData: newsList![index],
-                                                )));
-                                  },
-                                  child: NewsCard( onTap: () {
-                                      Share.share(
-                                          'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
-                                    },
-                                    newsTitle: newsList![index]
-                                        .gNewstitletamil
-                                        .toString(),
-                                    image:
-                                        "${newsList![index].gImage.toString()}",
-                                    date: newsList![index]
-                                        .gCreateddate
-                                        .toString(),
-                                    newsDis: newsList![index]
-                                        .gNewsshorttamil
-                                        .toString(),
+                              builder: (context, player) {
+                                return AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      // some widgets
+                                      player,
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: GestureDetector(
+                                            onTap: () {
+                                              controller.play();
+                                              showYoutube = false;
+                                              setState(() {});
+                                            },
+                                            child: showYoutube
+                                                ? Image.asset(
+                                                    "assets/youtube2.png",
+                                                    height: 70.h,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : Container()),
+                                      ),
+                                    ],
                                   ),
-                                ));
-                          },
+                                );
+                              }),
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        if (newsList != null)
+                          if (newsList!.isNotEmpty)
+                            ListView.builder(
+                              itemCount:
+                                  newsList!.length > 10 && newsList!.length < 20
+                                      ? newsList!.length
+                                      : 20,
+                              shrinkWrap: true,
+                              primary: false,
+                              itemBuilder: (context, index) {
+                                if (index < 10) return SizedBox();
+                                return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 12.h, horizontal: 12.w),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    NewsDetails(
+                                                      newsData:
+                                                          newsList![index],
+                                                    )));
+                                      },
+                                      child: NewsCard(
+                                        onTap: () {
+                                          Share.share(
+                                              'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
+                                        },
+                                        newsTitle: newsList![index]
+                                            .gNewstitletamil
+                                            .toString(),
+                                        image:
+                                            "${newsList![index].gImage.toString()}",
+                                        date: newsList![index]
+                                            .gIncidentdate
+                                            .toString(),
+                                        newsDis: newsList![index]
+                                            .gNewsshorttamil
+                                            .toString(),
+                                      ),
+                                    ));
+                              },
+                            )
+                          else
+                            Center(
+                              child: Container(
+                                child: const Text(""),
+                              ),
+                            )
+                        else
+                          Center(
+                              child: CircularProgressIndicator(
+                            color: Theme.of(context).primaryColor,
+                          )),
+                      ],
+                    ))
+            : Column(
+                children: [
+                  Expanded(
+                      child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/nointernet.png",
+                          height: 110.h,
+                        ),
+                        Text(
+                          "   No Internet",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              // color: Theme.of(context).primaryColor,
+                              fontSize: 14.sp),
                         )
-                      else
-                        Center(
-                          child: Container(
-                            child: const Text("No News"),
-                          ),
-                        )
-                    else
-                      Center(
-                          child: CircularProgressIndicator(
-                        color: Theme.of(context).primaryColor,
-                      )),
-                  ],
-                )));
+                      ],
+                    ),
+                  )),
+                ],
+              ));
   }
 }

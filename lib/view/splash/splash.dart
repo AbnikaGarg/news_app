@@ -38,6 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
     OneSignal.initialize(
       "b1ebc44b-1901-41f1-ae5c-3c09f08b1cb6",
     );
+    // OneSignal.s.setAppId("YOUR_ONESIGNAL_APP_ID");
     OneSignal.Notifications.clearAll();
 
     OneSignal.User.pushSubscription.addObserver((state) {
