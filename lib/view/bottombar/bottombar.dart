@@ -41,7 +41,18 @@ class _nameState extends State<BottomBar> {
         centerTitle: true,
         elevation: 1,
         title:
-            Image.asset('assets/splash.gif', height: 40.h, fit: BoxFit.cover),
+            InkWell(
+              onTap: () {
+                if(widget.index!=0){
+                   Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>  BottomBar(index: 0,)),
+            (Route<dynamic> route) => false,
+          );
+                }
+              },
+              child: Image.asset('assets/splash.gif', height: 40.h, fit: BoxFit.cover)),
         actions: [
           Row(
             children: [
@@ -65,7 +76,12 @@ class _nameState extends State<BottomBar> {
               ),
               InkWell(
                 onTap: () {
-                 context.push("/about");
+                Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>  About()),
+          
+          );
                 },
                 child: Container(
                   margin: EdgeInsets.only(

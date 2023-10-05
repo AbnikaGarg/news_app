@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
+import '../bottombar/bottombar.dart';
 import '../epaper/epaper.dart';
 import '../search/search.dart';
 
@@ -17,7 +18,14 @@ class TermsandConditions extends StatelessWidget {
         centerTitle: true,
         elevation: 1,
         title:
-            Image.asset('assets/splash.gif', height: 40.h, fit: BoxFit.cover),
+            InkWell( onTap: () {
+               Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>  BottomBar(index: 0,)),
+            (Route<dynamic> route) => false,
+          );
+            },child: Image.asset('assets/splash.gif', height: 40.h, fit: BoxFit.cover)),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -27,7 +35,7 @@ class TermsandConditions extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Terms & Conditions",
+                "விதிமுறைகள் மற்றும் நிபந்தனைகள்",
                 style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.red,
@@ -38,9 +46,9 @@ class TermsandConditions extends StatelessWidget {
               //   "1. Introduction",
               //   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.sp),
               // ),
-              // SizedBox(
-              //   height: 10.h,
-              // ),
+              SizedBox(
+                height: 10.h,
+              ),
               const HtmlWidget(
                 textStyle: TextStyle(
                       height:1.4,

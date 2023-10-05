@@ -6,23 +6,37 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:share_plus/share_plus.dart';
 
+// ignore: must_be_immutable
 class NewsCard extends StatelessWidget {
-  NewsCard({
-    super.key,
-    required this.newsTitle,
-    required this.date,
-    required this.newsDis,
-    required this.image,
-    this.onTap
-  });
+  NewsCard(
+      {super.key,
+      required this.newsTitle,
+      required this.date,
+      required this.newsDis,
+      required this.image,
+      this.onTap,
+      required this.editionid});
 
   final String newsTitle;
   final String date;
   final String image;
+  final String editionid;
   final String newsDis;
   var onTap;
   @override
+  String districtShort = "";
   Widget build(BuildContext context) {
+    if (editionid == "1") {
+      districtShort = "CHN";
+    } else if (editionid == "3") {
+      districtShort = "MDU";
+    } else if (editionid == "4") {
+      districtShort = "TPJ";
+    } else if (editionid == "2") {
+      districtShort = "CBE";
+    }else if (editionid == "5") {
+      districtShort = "VLR";
+    }
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,11 +108,18 @@ class NewsCard extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Icon(
-                    Icons.calendar_month,
-                    color: Color(0xFFA7A7A7),
-                    size: 14.sp,
+                  Text(
+                    "${districtShort} ",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFFA7A7A7),
+                        fontSize: 12.sp),
                   ),
+                  // Icon(
+                  //   Icons.calendar_month,
+                  //   color: const Color(0xFFA7A7A7),
+                  //   size: 14.sp,
+                  // ),
                   Expanded(
                     child: Text(
                       " ${date}",
@@ -111,7 +132,7 @@ class NewsCard extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap:onTap,
+                    onTap: onTap,
                     child: Container(
                       margin: EdgeInsets.only(right: 5.w),
                       child: SvgPicture.asset(

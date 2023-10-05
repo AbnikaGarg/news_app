@@ -23,7 +23,7 @@ class NewsModel {
 }
 
 class NewsTable {
-  NewsTable(Object? extra, {
+  NewsTable({
       this.gSlno, 
       this.gNewstitle, 
       this.gDetails, 
@@ -43,7 +43,10 @@ class NewsTable {
       this.gDistrictname, 
       this.gIncidentdate, 
       this.gNewsshort, 
-      this.gNewsshorttamil,});
+      this.gNewsshorttamil, 
+      this.gEditionid, 
+      this.gPublishingdate, 
+      this.gEditionname,});
 
   NewsTable.fromJson(dynamic json) {
     gSlno = json['g_slno'];
@@ -66,6 +69,9 @@ class NewsTable {
     gIncidentdate = json['g_incidentdate'];
     gNewsshort = json['g_newsshort'];
     gNewsshorttamil = json['g_newsshorttamil'];
+    gEditionid = json['g_editionid'];
+    gPublishingdate = json['g_publishingdate'];
+    gEditionname = json['g_editionname'];
   }
   int? gSlno;
   String? gNewstitle;
@@ -87,6 +93,9 @@ class NewsTable {
   String? gIncidentdate;
   String? gNewsshort;
   String? gNewsshorttamil;
+  int? gEditionid;
+  String? gPublishingdate;
+  String? gEditionname;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -110,6 +119,9 @@ class NewsTable {
     map['g_incidentdate'] = gIncidentdate;
     map['g_newsshort'] = gNewsshort;
     map['g_newsshorttamil'] = gNewsshorttamil;
+    map['g_editionid'] = gEditionid;
+    map['g_publishingdate'] = gPublishingdate;
+    map['g_editionname'] = gEditionname;
     return map;
   }
 

@@ -369,7 +369,9 @@ class _nameState extends State<Homepage> {
                                         onTap: () {
                                           Share.share(
                                               'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
-                                        },
+                                        },editionid:  newsList![index]
+                                            .gEditionid
+                                            .toString(),
                                         newsTitle: newsList![index]
                                             .gNewstitletamil
                                             .toString(),
@@ -696,7 +698,9 @@ class _nameState extends State<Homepage> {
                                         onTap: () {
                                           Share.share(
                                               'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
-                                        },
+                                        },editionid:  newsList![index]
+                                            .gEditionid
+                                            .toString(),
                                         newsTitle: newsList![index]
                                             .gNewstitletamil
                                             .toString(),

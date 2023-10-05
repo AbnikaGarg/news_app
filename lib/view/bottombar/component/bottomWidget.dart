@@ -3,12 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomAnimatedBottomBar extends StatelessWidget {
-
   CustomAnimatedBottomBar({
     Key? key,
     this.selectedIndex = 0,
     this.showElevation = true,
-    this.iconSize = 24,
+    this.iconSize = 20,
     this.backgroundColor,
     this.itemCornerRadius = 50,
     this.containerHeight = 56,
@@ -17,7 +16,7 @@ class CustomAnimatedBottomBar extends StatelessWidget {
     required this.items,
     required this.onItemSelected,
     this.curve = Curves.linear,
-  }) : assert(items.length >= 2 && items.length <= 5),
+  })  : assert(items.length >= 2 && items.length <= 5),
         super(key: key);
 
   final int selectedIndex;
@@ -51,7 +50,7 @@ class CustomAnimatedBottomBar extends StatelessWidget {
         child: Container(
           width: double.infinity,
           height: 60.h,
-          padding:  EdgeInsets.symmetric(vertical: 10.h, horizontal: 8),
+          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8),
           child: Row(
             mainAxisAlignment: mainAxisAlignment,
             children: items.map((item) {
@@ -60,6 +59,7 @@ class CustomAnimatedBottomBar extends StatelessWidget {
                 onTap: () => onItemSelected(index),
                 child: _ItemWidget(
                   item: item,
+                  selectedIndex: selectedIndex,
                   iconSize: iconSize,
                   isSelected: index == selectedIndex,
                   backgroundColor: bgColor,
@@ -84,7 +84,7 @@ class _ItemWidget extends StatelessWidget {
   final double itemCornerRadius;
   final Duration animationDuration;
   final Curve curve;
-
+  final int selectedIndex;
   const _ItemWidget({
     Key? key,
     required this.item,
@@ -94,7 +94,8 @@ class _ItemWidget extends StatelessWidget {
     required this.itemCornerRadius,
     required this.iconSize,
     this.curve = Curves.linear,
-  })  : super(key: key);
+    required this.selectedIndex,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -102,23 +103,23 @@ class _ItemWidget extends StatelessWidget {
       container: true,
       selected: isSelected,
       child: AnimatedContainer(
-       width: isSelected ? 100.w : 50.w,
+        width: isSelected ? selectedIndex==1 ?130.w: 110.w : 50.w,
         height: double.maxFinite,
         duration: animationDuration,
         curve: curve,
         decoration: BoxDecoration(
           color:
-          isSelected ? item.activeColor.withOpacity(0.2) : backgroundColor,
+              isSelected ? item.activeColor.withOpacity(0.2) : backgroundColor,
           borderRadius: BorderRadius.circular(itemCornerRadius),
         ),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: NeverScrollableScrollPhysics(),
           child: Container(
-            width: isSelected ? 100.w : 50.w,
-            padding: EdgeInsets.symmetric(horizontal: 8),
+            width: isSelected ? selectedIndex==1 ?130.w: 110.w : 50.w,
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
             child: Row(
-              mainAxisSize: MainAxisSize.max,
+              //mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
@@ -128,8 +129,8 @@ class _ItemWidget extends StatelessWidget {
                     color: isSelected
                         ? item.activeColor.withOpacity(1)
                         : item.inactiveColor == null
-                        ? item.activeColor
-                        : item.inactiveColor,
+                            ? item.activeColor
+                            : item.inactiveColor,
                   ),
                   child: item.icon,
                 ),
@@ -140,6 +141,7 @@ class _ItemWidget extends StatelessWidget {
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
                           color: item.activeColor,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.bold,
                         ),
                         maxLines: 1,
@@ -156,8 +158,8 @@ class _ItemWidget extends StatelessWidget {
     );
   }
 }
-class BottomNavyBarItem {
 
+class BottomNavyBarItem {
   BottomNavyBarItem({
     required this.icon,
     required this.title,
@@ -171,5 +173,4 @@ class BottomNavyBarItem {
   final Color activeColor;
   final Color? inactiveColor;
   final TextAlign? textAlign;
-
 }

@@ -10,14 +10,14 @@ class NewsCat extends StatelessWidget {
   NewsCat({super.key});
 
   List newsCat = [
-    {"category": "உலக செய்திகள்", "image": "assets/worldnews.png", "srno": 4},
+    {"category": "உலக செய்திகள்", "image": "assets/worldnews.jpeg", "srno": 4},
     {
       "category": "தேசிய செய்திகள்",
-      "image": "assets/nationalnews.png",
+      "image": "assets/nationalnews.jpeg",
       "srno": 1
     },
-    {"category": "மாநில செய்திகள்", "image": "assets/state.png", "srno": 3},
-    {"category": "சிறப்பு மலர்", "image": "assets/flower.png", "srno": 2}
+    {"category": "மாநில செய்திகள்", "image": "assets/state.jpeg", "srno": 3},
+    {"category": "சிறப்பு மலர்", "image": "assets/flower.jpeg", "srno": 2}
   ];
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class NewsCat extends StatelessWidget {
                             )));
                   },
                   child: Container(
-                    height: 100.h,
+                    height: 120.h,
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(

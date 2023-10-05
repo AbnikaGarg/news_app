@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../bottombar/bottombar.dart';
 import 'maps.dart';
 
 class Contactus extends StatelessWidget {
@@ -16,7 +18,15 @@ class Contactus extends StatelessWidget {
         centerTitle: true,
         elevation: 1,
         title:
-            Image.asset('assets/splash.gif', height: 40.h, fit: BoxFit.cover),
+           InkWell(
+            onTap: () {
+              Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>  BottomBar(index: 0,)),
+            (Route<dynamic> route) => false,
+          );
+            },child: Image.asset('assets/splash.gif', height: 40.h, fit: BoxFit.cover)),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -140,7 +150,7 @@ class Contactus extends StatelessWidget {
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(50),
                       child: Image.asset(
-                        "assets/twiter.png",
+                        "assets/twiter.jpg",
                         height: 25.h,
                         fit: BoxFit.cover,
                       )),

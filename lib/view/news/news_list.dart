@@ -16,6 +16,7 @@ import '../../components/news_card.dart';
 import '../../model/DistrictMasterModel.dart';
 import '../../model/NewsModel.dart';
 import '../../service/check_internet.dart';
+import '../bottombar/bottombar.dart';
 import '../pdf/pdf_view.dart';
 
 class NewsList extends StatefulWidget {
@@ -140,242 +141,271 @@ class _nameState extends State<NewsList> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.black),
-        centerTitle: true,
-        elevation: 1,
-        title:
-            Image.asset('assets/splash.gif', height: 40.h, fit: BoxFit.cover),
-      ),
-      floatingActionButton: _showBackToTopButton == false
-          ? null
-          : FloatingActionButton.small(
-              backgroundColor: Theme.of(context).primaryColor,
-              onPressed: _scrollToTop,
-              child: const Icon(CupertinoIcons.arrow_up),
-            ),
-      body:isInternet?  Column(
-        children: [
-          SizedBox(
-            height: 16.h,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Text(
-                    widget.news,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.red,
-                        fontSize: 16.sp),
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black),
+          centerTitle: true,
+          elevation: 1,
+          title: InkWell(
+              onTap: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => BottomBar(
+                            index: 0,
+                          )),
+                  (Route<dynamic> route) => false,
+                );
+              },
+              child: Image.asset('assets/splash.gif',
+                  height: 40.h, fit: BoxFit.cover)),
+        ),
+        floatingActionButton: _showBackToTopButton == false
+            ? null
+            : FloatingActionButton.small(
+                backgroundColor: Theme.of(context).primaryColor,
+                onPressed: _scrollToTop,
+                child: const Icon(CupertinoIcons.arrow_up),
+              ),
+        body: isInternet
+            ? Column(
+                children: [
+                  SizedBox(
+                    height: 16.h,
                   ),
-                ),
-                SizedBox(
-                  width: 20.w,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    selectDate();
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        color: Color(0xFFF1F2F6),
-                        borderRadius: BorderRadius.circular(8)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "$newsdate ",
-                          style: TextStyle(fontSize: 14.sp),
+                        Flexible(
+                          child: Text(
+                            widget.news,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.red,
+                                fontSize: 16.sp),
+                          ),
                         ),
-                        Icon(
-                          Icons.calendar_month_sharp,
-                          size: 16.sp,
-                        )
+                        SizedBox(
+                          width: 20.w,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            selectDate();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                color: Color(0xFFF1F2F6),
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "$newsdate ",
+                                  style: TextStyle(fontSize: 14.sp),
+                                ),
+                                Icon(
+                                  Icons.calendar_month_sharp,
+                                  size: 16.sp,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          if (widget.srno == 3)
-            if (districtList != null)
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelStyle: GoogleFonts.outfit(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14.sp,
-                    ),
-                    fillColor: Color.fromARGB(255, 245, 244, 244),
-                    counterText: '',
-                    errorStyle: GoogleFonts.outfit(fontSize: 12.sp),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color.fromRGBO(225, 30, 61, 1),
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    hintStyle: GoogleFonts.outfit(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14.sp,
-                    ),
-                    filled: true,
-                    isDense: true,
-                    contentPadding:
-                        const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                    hintText: "hintText",
-                    floatingLabelStyle:
-                        Theme.of(context).textTheme.displaySmall,
-                  ),
-                  dropdownColor: const Color.fromARGB(255, 245, 241, 241),
-                  style: const TextStyle(
-                      color: Colors.black, //<-- SEE HERE
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400),
-                  value: districtId, // guard it with null if empty
-                  items: districtList!.first.table!
-                      .map<DropdownMenuItem<String>>((productList) {
-                    return DropdownMenuItem<String>(
-                      value: productList.gDistrictid.toString(),
-                      child: Text(
-                        productList.gDistrictnametamil.toString(),
-                      ),
-                    );
-                  }).toList(),
-                  hint: Text(
-                    "Select District",
-                    style: GoogleFonts.outfit(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                  onChanged: (String? newValue) {
-                    districtId = newValue.toString();
-                    newsList = null;
-
-                    getNewsList();
-                    setState(() {});
-                  },
-                  validator: (String? value) {
-                    if (value?.isEmpty ?? true) {
-                      return 'District is Required';
-                    }
-                  },
-                ),
-              ),
-          Expanded(
-              child: newsList != null
-                  ? newsList!.isNotEmpty
-                      ? ListView.builder(
-                          controller: _scrollController,
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: newsList!.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10.h, horizontal: 12.w),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => NewsDetails(
-                                                  newsData: newsList![index],
-                                                )));
-                                  },
-                                  child: index == 0
-                                      ? AspectRatio(
-                                          aspectRatio: 16 / 6,
-                                          child: Stack(
-                                            fit: StackFit.expand,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                child: Image.network(
-                                                  "https://admin.murasoli.in/assets/layout/Documents/${newsList![index].gImage.toString()}",
-                                                  fit: BoxFit.cover,
-                                                  color: Color(0x66000000),
-                                                  colorBlendMode:
-                                                      BlendMode.darken,
-                                                ),
-                                              ),
-                                              Align(
-                                                alignment:
-                                                    Alignment.bottomCenter,
-                                                child: Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 12.h,
-                                                      left: 16.w,
-                                                      right: 16.w),
-                                                  child: Text(
-                                                    newsList![index]
-                                                        .gNewstitletamil
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.white,
-                                                        fontSize: 14.sp),
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      : NewsCard(
-                                          newsTitle: newsList![index]
-                                              .gNewstitletamil
-                                              .toString(),
-                                          onTap: () {
-                                            Share.share(
-                                                'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
-                                          },
-                                          image:
-                                              "${newsList![index].gImage.toString()}",
-                                          date: newsList![index]
-                                              .gIncidentdate
-                                              .toString(),
-                                          newsDis: newsList![index]
-                                              .gNewsshorttamil
-                                              .toString(),
-                                        ),
-                                ));
-                          },
-                        )
-                      : Center(
-                          child: Container(
-                            child: Text("News not available on $newsdate"),
+                  if (widget.srno == 3)
+                    if (districtList != null)
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.w, vertical: 14.h),
+                        child: DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            labelStyle: GoogleFonts.outfit(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14.sp,
+                            ),
+                            fillColor: Color.fromARGB(255, 245, 244, 244),
+                            counterText: '',
+                            errorStyle: GoogleFonts.outfit(fontSize: 12.sp),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromRGBO(225, 30, 61, 1),
+                                width: 1.0,
+                              ),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            hintStyle: GoogleFonts.outfit(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14.sp,
+                            ),
+                            filled: true,
+                            isDense: true,
+                            contentPadding:
+                                const EdgeInsetsDirectional.fromSTEB(
+                                    10, 10, 10, 10),
+                            hintText: "hintText",
+                            floatingLabelStyle:
+                                Theme.of(context).textTheme.displaySmall,
                           ),
-                        )
-                  : Center(
-                      child: CircularProgressIndicator(
-                      color: Theme.of(context).primaryColor,
-                    ))),
-        ],
-      ): Column(
+                          dropdownColor:
+                              const Color.fromARGB(255, 245, 241, 241),
+                          style: const TextStyle(
+                              color: Colors.black, //<-- SEE HERE
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400),
+                          value: districtId, // guard it with null if empty
+                          items: districtList!.first.table!
+                              .map<DropdownMenuItem<String>>((productList) {
+                            return DropdownMenuItem<String>(
+                              value: productList.gDistrictid.toString(),
+                              child: Text(
+                                productList.gDistrictnametamil.toString(),
+                              ),
+                            );
+                          }).toList(),
+                          hint: Text(
+                            "Select District",
+                            style: GoogleFonts.outfit(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                          onChanged: (String? newValue) {
+                            districtId = newValue.toString();
+                            newsList = null;
+
+                            getNewsList();
+                            setState(() {});
+                          },
+                          validator: (String? value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'District is Required';
+                            }
+                          },
+                        ),
+                      ),
+                  Expanded(
+                      child: newsList != null
+                          ? newsList!.isNotEmpty
+                              ? ListView.builder(
+                                  controller: _scrollController,
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: newsList!.length,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 10.h, horizontal: 12.w),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        NewsDetails(
+                                                          newsData:
+                                                              newsList![index],
+                                                        )));
+                                          },
+                                          child: index == 0
+                                              ? AspectRatio(
+                                                  aspectRatio: 16 / 6,
+                                                  child: Stack(
+                                                    fit: StackFit.expand,
+                                                    children: [
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        child: Image.network(
+                                                          "https://admin.murasoli.in/assets/layout/Documents/${newsList![index].gImage.toString()}",
+                                                          fit: BoxFit.cover,
+                                                          color:
+                                                              Color(0x66000000),
+                                                          colorBlendMode:
+                                                              BlendMode.darken,
+                                                        ),
+                                                      ),
+                                                      Align(
+                                                        alignment: Alignment
+                                                            .bottomCenter,
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  bottom: 12.h,
+                                                                  left: 16.w,
+                                                                  right: 16.w),
+                                                          child: Text(
+                                                            newsList![index]
+                                                                .gNewstitletamil
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize:
+                                                                    14.sp),
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                              : NewsCard(
+                                                  newsTitle: newsList![index]
+                                                      .gNewstitletamil
+                                                      .toString(),
+                                                  onTap: () {
+                                                    Share.share(
+                                                        'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
+                                                  },
+                                                  editionid: newsList![index]
+                                                      .gEditionid
+                                                      .toString(),
+                                                  image:
+                                                      "${newsList![index].gImage.toString()}",
+                                                  date: newsList![index]
+                                                      .gIncidentdate
+                                                      .toString(),
+                                                  newsDis: newsList![index]
+                                                      .gNewsshorttamil
+                                                      .toString(),
+                                                ),
+                                        ));
+                                  },
+                                )
+                              : Center(
+                                  child: Container(
+                                    child:
+                                        Text("News not available on $newsdate"),
+                                  ),
+                                )
+                          : Center(
+                              child: CircularProgressIndicator(
+                              color: Theme.of(context).primaryColor,
+                            ))),
+                ],
+              )
+            : Column(
                 children: [
                   Expanded(
                       child: Container(

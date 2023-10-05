@@ -35,7 +35,7 @@ class NavBar extends StatelessWidget {
           "image": "assets/nationalnews.png",
           "srno": 1
         },
-        {"category": "மாநில செய்திகள்", "image": "assets/state.png", "srno":3},
+        {"category": "மாநில செய்திகள்", "image": "assets/state.png", "srno": 3},
         {"category": "சிறப்பு மலர்", "image": "assets/flower.png", "srno": 2}
       ]
     },
@@ -247,8 +247,11 @@ class NavBar extends StatelessWidget {
                                   Navigator.pop(context);
                                   if (listview[index]["logo"].toString() ==
                                       "about") {
-                                    context.push(
-                                      "/about",
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              About()),
                                     );
                                   } else {
                                     Navigator.of(context).push(
@@ -281,12 +284,17 @@ class NavBar extends StatelessWidget {
                       SizedBox(
                         width: 10.w,
                       ),
-                      Text(
-                        "Terms and Conditions",
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              fontSize: 14.sp,
-                              color: Theme.of(context).iconTheme.color,
-                            ),
+                      Flexible(
+                        child: Text(
+                          "விதிமுறைகள் மற்றும் நிபந்தனைகள்",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    fontSize: 14.sp,
+                                    color: Theme.of(context).iconTheme.color,
+                                  ),
+                        ),
                       )
                     ],
                   ),
@@ -310,7 +318,7 @@ class NavBar extends StatelessWidget {
                         width: 10.w,
                       ),
                       Text(
-                        "Privacy policy ",
+                        "தனியுரிமைக் கொள்கை ",
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               fontSize: 14.sp,
                               color: Theme.of(context).iconTheme.color,
@@ -349,9 +357,9 @@ class NavBar extends StatelessWidget {
                   height: 60.h,
                 ),
                 Text(
-                  "Follow us",
+                  "எங்களை பின்தொடரவும்",
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      fontSize: 16.sp,
+                      fontSize: 14.sp,
                       color: Theme.of(context).iconTheme.color,
                       fontWeight: FontWeight.w600),
                 ),
@@ -375,7 +383,7 @@ class NavBar extends StatelessWidget {
                           )),
                     ),
                     SizedBox(
-                      width: 14.w,
+                      width: 20.w,
                     ),
                     GestureDetector(
                       onTap: () {
@@ -391,7 +399,7 @@ class NavBar extends StatelessWidget {
                           )),
                     ),
                     SizedBox(
-                      width: 14.w,
+                      width: 20.w,
                     ),
                     GestureDetector(
                       onTap: () {
@@ -400,13 +408,13 @@ class NavBar extends StatelessWidget {
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(50),
                           child: Image.asset(
-                            "assets/twiter.png",
+                            "assets/twiter.jpg",
                             height: 20.h,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fill,
                           )),
                     ),
                     SizedBox(
-                      width: 14.w,
+                      width: 20.w,
                     ),
                     GestureDetector(
                       onTap: () {

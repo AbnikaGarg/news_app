@@ -10,6 +10,7 @@ import '../../components/appbar.dart';
 import '../../components/news_card.dart';
 import '../../model/NewsModel.dart';
 import '../../service/check_internet.dart';
+import '../bottombar/bottombar.dart';
 import '../epaper/epaper.dart';
 
 class EditionList extends StatefulWidget {
@@ -125,8 +126,19 @@ class _nameState extends State<EditionList> {
           iconTheme: IconThemeData(color: Colors.black),
           centerTitle: true,
           elevation: 1,
-          title:
-              Image.asset('assets/splash.gif', height: 40.h, fit: BoxFit.cover),
+          title: InkWell(
+              onTap: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => BottomBar(
+                            index: 0,
+                          )),
+                  (Route<dynamic> route) => false,
+                );
+              },
+              child: Image.asset('assets/splash.gif',
+                  height: 40.h, fit: BoxFit.cover)),
         ),
         body: isInternet
             ? Column(
@@ -256,6 +268,8 @@ class _nameState extends State<EditionList> {
                                                   Share.share(
                                                       'www.murasoli.in/newscontent?storyid=${editionList!.first.table![index].gSlno}');
                                                 },
+                                                editionid:
+                                                    "${editionList!.first.table![index].gEditionid.toString()}",
                                                 image:
                                                     "${editionList!.first.table![index].gImage.toString()}",
                                                 newsTitle: editionList!
