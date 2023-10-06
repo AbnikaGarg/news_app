@@ -5,28 +5,26 @@ import 'package:murasoli_ios/view/edition/edition_list.dart';
 // ignore: must_be_immutable
 class EditionCat extends StatelessWidget {
   EditionCat({super.key});
+  bool isInternet = true;
   List editionCat = [
     {"category": "சென்னை பதிப்பு", "image": "assets/news1.png", "srno": 1},
-    {"category": "மதுரை பதிப்பு", "image": "assets/news2.png", "srno": 2},
+    {"category": "மதுரை பதிப்பு", "image": "assets/news2.png", "srno": 3},
     {
       "category": "ஒருங்கிணைந்த திருச்சி",
       "image": "assets/news3.png",
-      "srno": 3
+      "srno": 4
     },
     {
       "category": "ஒருங்கிணைந்த கோயம்புத்தூர்",
       "image": "assets/news4.png",
-      "srno": 4
+      "srno": 2
     },
-    {
-      "category": "ஒருங்கிணைந்த வேலூர்",
-      "image": "assets/news5.png",
-      "srno": 5
-    }
+    {"category": "ஒருங்கிணைந்த வேலூர்", "image": "assets/news5.png", "srno": 5}
   ];
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView( physics: BouncingScrollPhysics(),
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       child: Column(
         children: [
           SizedBox(
@@ -41,8 +39,11 @@ class EditionCat extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w),
                 child: GestureDetector(
                   onTap: () {
-                     Navigator.of(context).push(
-                         MaterialPageRoute(builder: (context) => EditionList(srNo: editionCat[index]["srno"],title:editionCat[index]["category"], )));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => EditionList(
+                              srNo: editionCat[index]["srno"],
+                              title: editionCat[index]["category"],
+                            )));
                   },
                   child: Container(
                     height: 100.h,

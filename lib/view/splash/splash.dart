@@ -21,7 +21,12 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     initPlatformState();
     Timer(const Duration(seconds: 2), () {
-      context.pushReplacement("/home");
+       Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>  BottomBar(index: 0,)),
+          
+          );
     });
   }
 
@@ -38,6 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
     OneSignal.initialize(
       "b1ebc44b-1901-41f1-ae5c-3c09f08b1cb6",
     );
+    // OneSignal.s.setAppId("YOUR_ONESIGNAL_APP_ID");
     OneSignal.Notifications.clearAll();
 
     OneSignal.User.pushSubscription.addObserver((state) {

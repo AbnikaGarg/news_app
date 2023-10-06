@@ -11,6 +11,7 @@ import '../edition/edition_category.dart';
 import '../editorial/editorial.dart';
 import '../epaper/epaper.dart';
 import '../home/homepage.dart';
+import '../news/news_category.dart';
 import '../news/news_list.dart';
 import 'component/bottomWidget.dart';
 
@@ -25,7 +26,8 @@ class _nameState extends State<BottomBar> {
   List<Widget> pages = [
     const Homepage(),
     const Editorial(),
-    NewsList(srno: 0),
+    NewsCat(),
+   // NewsList(srno: 0),
     EditionCat(),
     Text("data")
   ];
@@ -39,7 +41,18 @@ class _nameState extends State<BottomBar> {
         centerTitle: true,
         elevation: 1,
         title:
-            Image.asset('assets/splash.gif', height: 40.h, fit: BoxFit.cover),
+            InkWell(
+              onTap: () {
+                if(widget.index!=0){
+                   Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>  BottomBar(index: 0,)),
+            (Route<dynamic> route) => false,
+          );
+                }
+              },
+              child: Image.asset('assets/splash.gif', height: 40.h, fit: BoxFit.cover)),
         actions: [
           Row(
             children: [
@@ -63,7 +76,12 @@ class _nameState extends State<BottomBar> {
               ),
               InkWell(
                 onTap: () {
-                 context.push("/about");
+                Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>  About()),
+          
+          );
                 },
                 child: Container(
                   margin: EdgeInsets.only(
@@ -131,14 +149,14 @@ class _nameState extends State<BottomBar> {
           title: const Text('முகப்பு'),
           activeColor: Color.fromRGBO(255, 44, 23, 1),
           inactiveColor: _inactiveColor,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
         BottomNavyBarItem(
           icon: Icon(Icons.edit),
           title: const Text('தலையங்கம்'),
           activeColor: Color.fromRGBO(255, 44, 23, 1),
           inactiveColor: _inactiveColor,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
         BottomNavyBarItem(
           icon: const Icon(CupertinoIcons.globe),
@@ -147,14 +165,14 @@ class _nameState extends State<BottomBar> {
           ),
           activeColor: Color.fromRGBO(255, 44, 23, 1),
           inactiveColor: _inactiveColor,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
         BottomNavyBarItem(
           icon: const Icon(Icons.print),
           title: const Text('பதிப்பு'),
           activeColor: Color.fromRGBO(255, 44, 23, 1),
           inactiveColor: _inactiveColor,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
         BottomNavyBarItem(
           icon: SvgPicture.asset(
@@ -164,7 +182,7 @@ class _nameState extends State<BottomBar> {
           title: const Text('இ–பேப்பர்'),
           activeColor: Color.fromRGBO(255, 44, 23, 1),
           inactiveColor: _inactiveColor,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
       ],
     );

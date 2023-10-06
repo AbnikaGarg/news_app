@@ -172,14 +172,14 @@ class _MainPageState extends State<Epaper> {
             if (this.mounted) {
               setState(() {
                 showFloat = false;
-                context.pushReplacement("/home");
-                // Navigator.pushAndRemoveUntil(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (BuildContext context) => BottomBar(index: 0)),
-                //     ModalRoute.withName(
-                //         '/') // Replace this with your root screen's route name (usually '/')
-                //     );
+               // context.pushReplacement("/home");
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => BottomBar(index: 0)),
+                    ModalRoute.withName(
+                        '/') // Replace this with your root screen's route name (usually '/')
+                    );
               });
             }
           },

@@ -6,8 +6,9 @@ import '../utils/app_urls.dart';
 
 class ApiFetcheditionLists {
   List<NewsModel>? editionList = [];
-  Future<List<NewsModel>?> apiFetchedition(int srno) async {
-    var ur = Uri.parse(AppUrls.getEditions + "?slno=${srno}&incidentdate=2023-09-29");
+  Future<List<NewsModel>?> apiFetchedition(int srno,String date) async {
+    try{
+    var ur = Uri.parse(AppUrls.getEditions + "?slno=${srno}&incidentdate=$date");
     final response2 = await http.get(ur, headers: {
       "content-type": "application/json",
     });
@@ -19,6 +20,9 @@ class ApiFetcheditionLists {
 
       default:
         return editionList;
+    }
+     } on SocketException catch (_) {
+      print('not connected');
     }
   }
 }

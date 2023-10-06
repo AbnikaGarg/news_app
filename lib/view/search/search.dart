@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:murasoli_ios/service/get_searchData.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
 import '../../components/news_card.dart';
 import '../../model/NewsModel.dart';
 import '../news/news_details.dart';
@@ -60,14 +60,13 @@ class _SearchState extends State<Search> {
                 },
                 hintText: "Search..",
                 onChanged: (val) {
-                  if(val!=""){
+                  if (val != "") {
                     setState(() {
-                      isSearch=true;
+                      isSearch = true;
                     });
-                  }
-                  else{
-                      setState(() {
-                      isSearch=false;
+                  } else {
+                    setState(() {
+                      isSearch = false;
                     });
                   }
                 },
@@ -96,24 +95,29 @@ class _SearchState extends State<Search> {
                                         vertical: 10.h, horizontal: 14.w),
                                     child: GestureDetector(
                                       onTap: () {
-                                      Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => NewsDetails(
-                                                  newsData: newsList![index],
-                                                )));
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    NewsDetails(
+                                                      newsData:
+                                                          newsList![index],
+                                                    )));
                                       },
                                       child: NewsCard(
                                         newsTitle: newsList![index]
                                             .gNewstitletamil
                                             .toString(),
-                                              onTap: () {
-                                      Share.share(
-                                          'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
-                                    },
+                                        onTap: () {
+                                          Share.share(
+                                              'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
+                                        },
+                                        editionid: newsList![index]
+                                            .gEditionid
+                                            .toString(),
                                         image:
                                             "${newsList![index].gImage.toString()}",
                                         date: newsList![index]
-                                            .gCreateddate
+                                            .gIncidentdate
                                             .toString(),
                                         newsDis: newsList![index]
                                             .gNewsshorttamil
@@ -144,14 +148,14 @@ class SearchTextbox extends StatelessWidget {
   var iconSuf;
   var ontap;
   var iconPref;
- Function(String) onChanged;
+  Function(String) onChanged;
   TextEditingController searchText;
   SearchTextbox(
       {Key? key,
       required this.hintText,
       required this.searchText,
       this.iconSuf,
-     required this.onChanged,
+      required this.onChanged,
       this.iconPref,
       this.ontap})
       : super(key: key);
@@ -162,7 +166,7 @@ class SearchTextbox extends StatelessWidget {
       controller: searchText,
       textInputAction: TextInputAction.search,
       onEditingComplete: ontap,
-      onChanged: (val){
+      onChanged: (val) {
         onChanged(val);
       },
       // autofocus: true,

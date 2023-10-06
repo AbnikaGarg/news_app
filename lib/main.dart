@@ -31,12 +31,12 @@ class MyApp extends StatelessWidget {
 
         // ],
       ),
-      GoRoute(
-        path: '/home',
-        builder: (BuildContext context, GoRouterState state) {
-          return BottomBar(index: 0);
-        },
-      ),
+      // GoRoute(
+      //   path: '/home',
+      //   builder: (BuildContext context, GoRouterState state) {
+      //     return BottomBar(index: 0);
+      //   },
+      // ),
       GoRoute(
         path: '/about',
         builder: (context, state) {
@@ -65,10 +65,10 @@ class MyApp extends StatelessWidget {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, child) {
-          return MaterialApp.router(
+          return MaterialApp(
             title: 'முரசொலி',
             debugShowCheckedModeBanner: false,
-            routerConfig: _router,
+          
             theme: ThemeData(
 
                 //   primarySwatch:  const Color.fromRGBO(255, 44, 23, 1),
@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
                   TargetPlatform.android: CupertinoPageTransitionsBuilder(),
                   TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
                 })),
-            // home: const SplashScreen(),
+             home: const SplashScreen(),
           );
         });
   }

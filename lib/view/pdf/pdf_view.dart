@@ -30,8 +30,7 @@ class _MyAppState extends State<PdfView> {
     super.initState();
     checkPermission();
     setState(() {
-      fileName = Path.basename(
-           widget.pdf);
+      fileName = Path.basename(widget.pdf);
     });
   }
 
@@ -64,9 +63,8 @@ class _MyAppState extends State<PdfView> {
     });
 
     try {
-      Response response = await Dio().download(
-           widget.pdf,
-          filePath, onReceiveProgress: (count, total) {
+      Response response = await Dio().download(widget.pdf, filePath,
+          onReceiveProgress: (count, total) {
         setState(() {
           progress = (count / total);
         });
@@ -99,7 +97,14 @@ class _MyAppState extends State<PdfView> {
   }
 
   Future<bool> _onWillPop() async {
-     context.pushReplacement("/home");
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+          builder: (BuildContext context) => BottomBar(
+                index: 0,
+              )),
+      (Route<dynamic> route) => false,
+    );
     return false;
   }
 
@@ -117,53 +122,64 @@ class _MyAppState extends State<PdfView> {
                 _onWillPop();
               },
               child: Icon(Icons.arrow_back)),
-          title:
-              Image.asset('assets/splash.gif', height: 40.h, fit: BoxFit.cover),
-        
-        // actions: [
-        //   Row(
-        //     children: [
-        //       InkWell(
-        //         onTap: () {},
-        //         child: IconButton(
-        //             onPressed: () {
-        //               fileExists && dowloading == false
-        //                   ? OpenFile.open(filePath)
-        //                   : startDownload();
-        //             },
-        //             icon: fileExists
-        //                 ? const Icon(
-        //                     Icons.save,
-        //                     color: Colors.green,
-        //                   )
-        //                 : dowloading
-        //                     ? Stack(
-        //                         alignment: Alignment.center,
-        //                         children: [
-        //                           CircularProgressIndicator(
-        //                             value: progress,
-        //                             strokeWidth: 3,
-        //                             backgroundColor: Colors.grey,
-        //                             valueColor:
-        //                                 const AlwaysStoppedAnimation<Color>(
-        //                                     Colors.blue),
-        //                           ),
-        //                           Text(
-        //                             "${(progress * 100).toStringAsFixed(2)}",
-        //                             style: TextStyle(
-        //                                 fontSize: 10.sp,
-        //                                 color: Colors.blue),
-        //                           )
-        //                         ],
-        //                       )
-        //                     : Icon(
-        //                         Icons.download,
-        //                         size: 20.sp,
-        //                       )),
-        //       ),
-        //     ],
-        //   ),
-        //],
+          title: InkWell(
+              onTap: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => BottomBar(
+                            index: 0,
+                          )),
+                  (Route<dynamic> route) => false,
+                );
+              },
+              child: Image.asset('assets/splash.gif',
+                  height: 40.h, fit: BoxFit.cover)),
+
+          // actions: [
+          //   Row(
+          //     children: [
+          //       InkWell(
+          //         onTap: () {},
+          //         child: IconButton(
+          //             onPressed: () {
+          //               fileExists && dowloading == false
+          //                   ? OpenFile.open(filePath)
+          //                   : startDownload();
+          //             },
+          //             icon: fileExists
+          //                 ? const Icon(
+          //                     Icons.save,
+          //                     color: Colors.green,
+          //                   )
+          //                 : dowloading
+          //                     ? Stack(
+          //                         alignment: Alignment.center,
+          //                         children: [
+          //                           CircularProgressIndicator(
+          //                             value: progress,
+          //                             strokeWidth: 3,
+          //                             backgroundColor: Colors.grey,
+          //                             valueColor:
+          //                                 const AlwaysStoppedAnimation<Color>(
+          //                                     Colors.blue),
+          //                           ),
+          //                           Text(
+          //                             "${(progress * 100).toStringAsFixed(2)}",
+          //                             style: TextStyle(
+          //                                 fontSize: 10.sp,
+          //                                 color: Colors.blue),
+          //                           )
+          //                         ],
+          //                       )
+          //                     : Icon(
+          //                         Icons.download,
+          //                         size: 20.sp,
+          //                       )),
+          //       ),
+          //     ],
+          //   ),
+          //],
         ),
         body: SfPdfViewer.network(
           widget.pdf,
