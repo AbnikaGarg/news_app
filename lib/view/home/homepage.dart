@@ -21,6 +21,7 @@ import '../../model/NewsModel.dart';
 import '../../service/get_homepage_news.dart';
 import '../../service/get_news.dart';
 import '../../service/get_thirukal.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -239,19 +240,66 @@ class _nameState extends State<Homepage> {
                                     },
                                     child: Stack(
                                       children: [
+                                        // AspectRatio(
+                                        //   aspectRatio: 16 / 9,
+                                        //   child: ClipRRect(
+                                        //       borderRadius:
+                                        //           BorderRadius.circular(16),
+                                        //       child: FadeInImage.assetNetwork(
+                                        //         imageScale: 2,
+                                        //         fit: BoxFit.cover,
+                                        //         placeholder: "assets/gif.gif",
+                                        //         image:
+                                        //             "https://admin.murasoli.in/assets/layout/Documents/${newsList![index].gImage.toString()}",
+                                        //         imageErrorBuilder: (context,
+                                        //             error, stackTrace) {
+                                        //           return Image.network(
+                                        //             "https://admin.murasoli.in/assets/layout/Documents/${newsList![index].gImage.toString()}",
+                                        //             fit: BoxFit.cover,
+                                        //             color: Color(0x66000000),
+                                        //             colorBlendMode:
+                                        //                 BlendMode.darken,
+                                        //           );
+                                        //         },
+                                        //       )),
+                                        // ),
                                         AspectRatio(
                                           aspectRatio: 16 / 9,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                            child: Image.network(
-                                              "https://admin.murasoli.in/assets/layout/Documents/${newsList![index].gImage.toString()}",
-                                              fit: BoxFit.cover,
-                                              color: Color(0x66000000),
-                                              colorBlendMode: BlendMode.darken,
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                "https://admin.murasoli.in/assets/layout/Documents/${newsList![index].gImage.toString()}",
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover,
+                                                  colorFilter: ColorFilter.mode(
+                                                    Color(0x66000000),
+                                                    BlendMode.darken,
+                                                  ),
+                                                ),
+                                              ),
                                             ),
+                                            placeholder: (context, url) =>
+                                                SizedBox(
+                                              child: Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                color: Colors.red,
+                                              )),
+                                              height: 10.h,
+                                              width: 10.h,
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
                                           ),
                                         ),
+
                                         Align(
                                           alignment: Alignment.bottomCenter,
                                           child: Padding(
@@ -293,9 +341,9 @@ class _nameState extends State<Homepage> {
                                 enableInfiniteScroll: true,
                                 reverse: false,
                                 autoPlay: true,
-                                autoPlayInterval: Duration(seconds: 3),
+                                autoPlayInterval: Duration(seconds: 10),
                                 autoPlayAnimationDuration:
-                                    Duration(milliseconds: 800),
+                                    Duration(milliseconds: 2000),
                                 // autoPlayCurve: Curves.fastOutSlowIn,
                                 autoPlayCurve: Curves.fastOutSlowIn,
                                 // onPageChanged: pageController,
@@ -369,7 +417,8 @@ class _nameState extends State<Homepage> {
                                         onTap: () {
                                           Share.share(
                                               'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
-                                        },editionid:  newsList![index]
+                                        },
+                                        editionid: newsList![index]
                                             .gEditionid
                                             .toString(),
                                         newsTitle: newsList![index]
@@ -462,11 +511,11 @@ class _nameState extends State<Homepage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         FittedBox(
-                                            fit: BoxFit.scaleDown,
+                                            fit: BoxFit.contain,
                                             child: Text(
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w600,
-                                                  fontSize: 16.sp,
+                                                  fontSize: 14.sp,
                                                 ),
                                                 '${thirukalList!.first.table![0].gKural}')),
                                         // Text(
@@ -478,11 +527,11 @@ class _nameState extends State<Homepage> {
                                           height: 6.h,
                                         ),
                                         FittedBox(
-                                            fit: BoxFit.scaleDown,
+                                            fit: BoxFit.contain,
                                             child: Text(
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w600,
-                                                  fontSize: 16.sp,
+                                                  fontSize: 14.sp,
                                                 ),
                                                 '${thirukalList!.first.table![0].gKural1}')),
                                         // Text(
@@ -698,7 +747,8 @@ class _nameState extends State<Homepage> {
                                         onTap: () {
                                           Share.share(
                                               'www.murasoli.in/newscontent?storyid=${newsList![index].gSlno}');
-                                        },editionid:  newsList![index]
+                                        },
+                                        editionid: newsList![index]
                                             .gEditionid
                                             .toString(),
                                         newsTitle: newsList![index]

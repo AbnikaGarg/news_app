@@ -50,7 +50,7 @@ class CustomAnimatedBottomBar extends StatelessWidget {
         child: Container(
           width: double.infinity,
           height: 60.h,
-          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8),
+          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
           child: Row(
             mainAxisAlignment: mainAxisAlignment,
             children: items.map((item) {
@@ -103,7 +103,7 @@ class _ItemWidget extends StatelessWidget {
       container: true,
       selected: isSelected,
       child: AnimatedContainer(
-        width: isSelected ? selectedIndex==1 ?130.w: 110.w : 50.w,
+        width: isSelected ? selectedIndex==1 || selectedIndex==2 ? 130.w: 100.w : 50.w,
         height: double.maxFinite,
         duration: animationDuration,
         curve: curve,
@@ -116,7 +116,7 @@ class _ItemWidget extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           physics: NeverScrollableScrollPhysics(),
           child: Container(
-            width: isSelected ? selectedIndex==1 ?130.w: 110.w : 50.w,
+            width: isSelected ? selectedIndex==1 || selectedIndex==2 ? 130.w: 100.w : 50.w,
             padding: EdgeInsets.symmetric(horizontal: 8.w),
             child: Row(
               //mainAxisSize: MainAxisSize.max,
@@ -137,12 +137,12 @@ class _ItemWidget extends StatelessWidget {
                 if (isSelected)
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      padding: EdgeInsets.symmetric(horizontal: 4.w),
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
                           color: item.activeColor,
                           fontSize: 12.sp,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                         ),
                         maxLines: 1,
                         textAlign: item.textAlign,

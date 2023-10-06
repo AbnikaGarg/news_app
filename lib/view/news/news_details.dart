@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_html/flutter_html.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -250,11 +251,31 @@ class _NewsDetailsState extends State<NewsDetails> {
                   ],
                 ),
               ),
-              background: Image.network(
-                "https://admin.murasoli.in/assets/layout/Documents/${widget.newsData.gImage.toString()}",
-                fit: BoxFit.cover,
-                color: Color.fromARGB(102, 48, 47, 47),
-                colorBlendMode: BlendMode.darken,
+              background: CachedNetworkImage(
+                imageUrl:
+                    "https://admin.murasoli.in/assets/layout/Documents/${widget.newsData.gImage.toString()}",
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Color(0x66000000),
+                        BlendMode.darken,
+                      ),
+                    ),
+                  ),
+                ),
+                placeholder: (context, url) => SizedBox(
+                  child: Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.black,
+                  )),
+                  height: 10.h,
+                  width: 10.h,
+                ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
           ),
@@ -264,9 +285,8 @@ class _NewsDetailsState extends State<NewsDetails> {
                   padding: EdgeInsets.only(left: 12.w, right: 12.w),
                   child: HtmlWidget(
                     textStyle: TextStyle(
-                          height: 1.4,
-                          fontSize: fontSize,
-                          wordSpacing: 2), """
+                        height: 1.4, fontSize: fontSize, wordSpacing: 2),
+                    """
               ${widget.newsData.gNewsdetailstamil}
                 """,
                   )))

@@ -45,16 +45,16 @@ class NavBar extends StatelessWidget {
       "page": BottomBar(index: 3),
       "category": [
         {"category": "சென்னை பதிப்பு", "image": "assets/news1.png", "srno": 1},
-        {"category": "மதுரை பதிப்பு", "image": "assets/news2.png", "srno": 2},
+        {"category": "மதுரை பதிப்பு", "image": "assets/news2.png", "srno": 3},
         {
           "category": "ஒருங்கிணைந்த திருச்சி",
           "image": "assets/news3.png",
-          "srno": 3
+          "srno": 4
         },
         {
           "category": "ஒருங்கிணைந்த கோயம்புத்தூர்",
           "image": "assets/news4.png",
-          "srno": 4
+          "srno": 2
         },
         {
           "category": "ஒருங்கிணைந்த வேலூர்",

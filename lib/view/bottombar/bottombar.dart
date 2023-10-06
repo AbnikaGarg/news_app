@@ -149,14 +149,14 @@ class _nameState extends State<BottomBar> {
           title: const Text('முகப்பு'),
           activeColor: Color.fromRGBO(255, 44, 23, 1),
           inactiveColor: _inactiveColor,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
         BottomNavyBarItem(
           icon: Icon(Icons.edit),
           title: const Text('தலையங்கம்'),
           activeColor: Color.fromRGBO(255, 44, 23, 1),
           inactiveColor: _inactiveColor,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
         BottomNavyBarItem(
           icon: const Icon(CupertinoIcons.globe),
@@ -165,14 +165,14 @@ class _nameState extends State<BottomBar> {
           ),
           activeColor: Color.fromRGBO(255, 44, 23, 1),
           inactiveColor: _inactiveColor,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
         BottomNavyBarItem(
           icon: const Icon(Icons.print),
           title: const Text('பதிப்பு'),
           activeColor: Color.fromRGBO(255, 44, 23, 1),
           inactiveColor: _inactiveColor,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
         BottomNavyBarItem(
           icon: SvgPicture.asset(
@@ -182,7 +182,7 @@ class _nameState extends State<BottomBar> {
           title: const Text('இ–பேப்பர்'),
           activeColor: Color.fromRGBO(255, 44, 23, 1),
           inactiveColor: _inactiveColor,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
       ],
     );
